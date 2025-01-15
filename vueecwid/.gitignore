@@ -1,0 +1,85 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+out/
+build/
+.esbuild/
+.cache/
+.next/
+.nuxt/
+
+# Testing directories
+coverage/
+junit.xml
+*.test-results
+/cypress/videos/
+/cypress/screenshots/
+/playwright-report/
+
+# Local environment files
+.env
+.env.*.local
+.env.local
+*.local
+
+# Temp files
+*.tmp
+*.temp
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE and editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript
+*.tsbuildinfo
+
+# Miscellaneous
+.vscode/
+.vscode-test/
+*.log
+yarn.lock
+pnp.js
+.pnp.js
+.pnp.cjs
+
+# Optional lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Docker-related files
+docker-compose.override.yml
+docker-compose.local.yml
+Dockerfile*
+.dockerignore
+
+# Additional ignores for Webpack
+.cache-loader/
+.parcel-cache/
+.storybook/
+
+# Git
+.git/
+
