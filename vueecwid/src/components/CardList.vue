@@ -9,7 +9,7 @@
         <Card 
             v-for="item in items"
             :key="item.id"
-            :title="item.title" 
+            :title="item.name" 
             :imageURL="item.imageUrl"
             :price="item.price"
             :isAdded="false"
