@@ -22,6 +22,10 @@
         filters.sortBy = event.target.value; 
     };
 
+    const onChangeSearchInput = event => {
+        filters.searchQuery = event.target.value;
+    };
+
 </script>
 
 <template>
@@ -37,7 +41,7 @@
             <div class="relative">
                 <img class="absolute left-4 top-3" src="/search.svg">
                 <input
-                    v-model="filters.searchQuery"
+                    @input="onChangeSearchInput"
                     class="border border-slate-200 rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400"
                     placeholder="Search..."
                 >
