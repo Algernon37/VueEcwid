@@ -9,14 +9,33 @@
 
     const items = ref([]);
 
-    onMounted(async () => {
-        try{
-            const {data} = await axios.get('https://app.ecwid.com/api/v3/108362264/products', 
-            {headers: {'Authorization': 'Bearer public_RiNvjTVVzKLhFNWyzR5fNY68u1GMHLEs'}})
-            items.value = data.items;
+    const fetchProducts = async (filters = {}) => {
+        try {
+            const options = {
+                method: 'GET',
+                url: 'https://app.ecwid.com/api/v3/108362264/products',
+                headers: {
+                    'Authorization': 'Bearer public_RiNvjTVVzKLhFNWyzR5fNY68u1GMHLEs',
+                    accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    sortBy: filters.sortBy,          
+                    keyword: filters.searchQuery,   
+                    enabled: true,  
+                    limit: 100  
+                }
+            };
+            const response = await axios(options);
+            return response.data.items;
         } catch (error) {
-            console.error(error);
-        }   
+            console.error('Error:', error.response?.data || error.message);
+            return [];
+        }
+    };
+
+    onMounted(async () => {
+        items.value = await fetchProducts();  
     });
 
     const updateItems = (newItems) => {
@@ -31,8 +50,8 @@
             <HeaderComponent />  
             <div class="p-10">
                 <SearchSelect 
-                    :items="items"
                     @update:items="updateItems"
+                    :fetchProducts="fetchProducts"
                 />
                 <div class="mt-10">
                     <CardList :items="items"/>
