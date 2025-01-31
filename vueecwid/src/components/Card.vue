@@ -1,13 +1,13 @@
 <script setup>
 
-    defineProps({
+    const props = defineProps({
         imageURL: String,
         title: String,
         price: Number,
         isFavorite: Boolean,
         isAdded: Boolean,
-        onClickAdd: Function,
         onClickFavorite: Function,
+        onClickAddInCart: Function,
     })
 
 </script>
@@ -21,7 +21,7 @@
                 <span class="text-slate-400">Price:</span>
                 <b>€ {{ price }}</b>
             </div>
-            <img @click="onClickAdd" :src="isAdded ? '/checked.svg' : '/plus.svg'" alt="plus" />
+            <img @click="onClickAddInCart" :src="isAdded ? '/checked.svg' : '/plus.svg'" alt="plus" />
         </div>
     </div>
 </template>

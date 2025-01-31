@@ -1,12 +1,11 @@
 <script setup>
-    import { reactive,watch } from "vue";
-    import axios from "axios";
+    import { reactive, watch } from "vue";
 
     const props = defineProps({
         fetchProducts: Function
     });
-
-    const emit = defineEmits(['update:items']);
+    
+    const emit = defineEmits(['updateItems']);
 
     const filters = reactive({
         sortBy: '',
@@ -15,7 +14,7 @@
 
     watch(filters, async (newFilters) => {
         const filteredItems = await props.fetchProducts(newFilters);
-        emit('update:items', filteredItems);
+        emit('updateItems', filteredItems);
     });
         
     const onChangeSelect = event => {
@@ -23,7 +22,12 @@
     };
 
     const onChangeSearchInput = event => {
-        filters.searchQuery = event.target.value;
+        let debounceTimeout;
+        clearTimeout(debounceTimeout); 
+        if (event.target.value.length < 4) return; 
+        debounceTimeout = setTimeout(() => {
+            filters.searchQuery = event.target.value;
+        }, 1000);
     };
 
 </script>
