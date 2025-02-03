@@ -1,6 +1,13 @@
 <script setup>
-    import CardItemList from './CardItemList.vue';
+    import CardItemList from './CartItemList.vue';
     import DrawerHeader from './DrawerHeader.vue';
+
+    const props = defineProps({
+        totalPrice:Number,
+        vatPrice:Number
+    })
+
+    
 
 </script>
 
@@ -16,12 +23,12 @@
                     <div class="flex gap-2 ">
                         <span>Total:</span>
                         <div class="flex-1 border-b border-dashed"></div>
-                        <b>250 $</b>
+                        <b>€ {{ totalPrice }}</b>
                     </div>
                     <div class="flex gap-2 ">
                         <span>Tax 5%</span>
                         <div class="flex-1 border-b border-dashed"></div>
-                        <b>12.5 $</b>
+                        <b>€ {{ vatPrice }}</b>
                     </div>
                     <button disabled="" class="bg-lime-500 w-full rounded-xl py-3 mt-4 text-white disabled:bg-slate-400 hover:bg-lime-600 active:bg-lime-700 transition cursor-pointer"> 
                         Place an order

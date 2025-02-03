@@ -5,7 +5,8 @@
     const props = defineProps({
         items: Array
     })
-    const { onClickFavorite, onClickAdd, favoriteItems, cartItems } = inject('favoriteAndCartActions');
+    const { onClickFavorite, onClickCart, favoriteItems, cartItems } = inject('favoriteAndCart');
+
 
 </script>
 <template>
@@ -16,10 +17,10 @@
             :title="item.name" 
             :imageURL="item.imageUrl"
             :price="item.price"
-            :isAdded="cartItems.includes(item.id)"
-            :isFavorite="favoriteItems.includes(item.id)"
-            :onClickFavorite="() => onClickFavorite(item.id)"
-            :onClickAddInCart="() => onClickAdd(item.id)"
+            :isAdded="cartItems.some(cartItem => cartItem.id === item.id)"
+            :isFavorite="favoriteItems.some(favItem => favItem.id === item.id)"
+            :onClickFavorite="() => onClickFavorite(item)"
+            :onClickAddInCart="() => onClickCart(item)"
         />
     </div>
 </template>
