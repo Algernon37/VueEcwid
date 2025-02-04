@@ -4,10 +4,10 @@
 
     const props = defineProps({
         totalPrice:Number,
-        vatPrice:Number
+        totalTax:Number,
     })
 
-    
+    const emit = defineEmits(['createOrder']);
 
 </script>
 
@@ -28,9 +28,13 @@
                     <div class="flex gap-2 ">
                         <span>Tax 5%</span>
                         <div class="flex-1 border-b border-dashed"></div>
-                        <b>€ {{ vatPrice }}</b>
+                        <b>€ {{ totalTax }}</b>
                     </div>
-                    <button disabled="" class="bg-lime-500 w-full rounded-xl py-3 mt-4 text-white disabled:bg-slate-400 hover:bg-lime-600 active:bg-lime-700 transition cursor-pointer"> 
+                    <button 
+                        :disabled="totalPrice ? false : true"
+                        class="bg-lime-500 w-full rounded-xl py-3 mt-4 text-white disabled:bg-slate-400 hover:bg-lime-600 active:bg-lime-700 transition cursor-pointer"
+                        @click="emit('createOrder')"
+                    > 
                         Place an order
                     </button>
                 </div>

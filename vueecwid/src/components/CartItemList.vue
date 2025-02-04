@@ -3,6 +3,7 @@
     import CartItem from "./CartItem.vue";
 
     const {cartItems, onClickCart } = inject('favoriteAndCart')
+    const {changeQuantity}  = inject('quantityActions')
 
 </script>
 <template>
@@ -13,6 +14,8 @@
             :title="item.name"
             :price= "item.price"
             :removeFromCart="() => onClickCart(item)"
+            :quantity="item.quantity"
+            :changeQuantity="(newQuantity) => changeQuantity(item, newQuantity)"
         />
     </div>
 </template>

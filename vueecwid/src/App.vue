@@ -13,8 +13,9 @@
     const favoriteItems = ref(JSON.parse(localStorage.getItem('favoriteItems')) || []);
     const cartItems = ref(JSON.parse(localStorage.getItem('cartItems')) || []);
     
-    const totalPrice = computed(() => parseFloat(cartItems.value.reduce((acc, item) => acc + item.price, 0).toFixed(2)));
-    const vatPrice = computed(() => parseFloat((totalPrice.value * 0.05).toFixed(2)));
+    const totalPrice = computed(() => parseFloat(cartItems.value.reduce((acc, item) => acc + item.price*item.quantity, 0).toFixed(2)));
+    const totalTax = computed(() => parseFloat((totalPrice.value * 0.05).toFixed(2)));
+    const itemTax = (item) => parseFloat((item.price * 0.05).toFixed(2));
 
     const fetchProducts = async (filters = {}) => {
         try {
@@ -55,21 +56,28 @@
 
     const createOrder = async () => {
         try {
+            const cartItemsCopy = JSON.parse(JSON.stringify(cartItems.value)).map(item => ({
+                ...item,
+                tax: item.tax ? Number(itemTax(item)) : 0, 
+                shipping: item.shipping ? Number(item.shipping) : 0 
+            }));
             const options = {
                 method: 'POST',
                 url: 'https://app.ecwid.com/api/v3/108362264/orders',
                 headers: {
                     'Authorization': 'Bearer public_RiNvjTVVzKLhFNWyzR5fNY68u1GMHLEs',
-                    accept: 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                params: {
-                    items: cartItems,          
-                    totalPrice: totalPrice.value, 
+                data: {
+                    items: cartItemsCopy,
+                    totalPrice: totalPrice.value,
+                    paymentStatus: 'AWAITING_PAYMENT'
                 }
             };
             const response = await axios(options);
             cartItems.value = [];
+            localStorage.setItem('cartItems', JSON.stringify([]));
             return response.data;
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
@@ -90,13 +98,20 @@
         }
         const index = itemsList.value.findIndex(product => product.id === item.id);
         if (index === -1) {
+            if (listType === 'cart') {
+                item.quantity = 1;
+            }
             itemsList.value.push(item);
         } else {
             itemsList.value.splice(index, 1);
         }
         localStorage.setItem(listType === 'favorite' ? 'favoriteItems' : 'cartItems', JSON.stringify(itemsList.value));
     };
-    
+
+    const changeQuantity = (item, newQuantity) => {
+        item.quantity = newQuantity;
+    };
+
     const onClickFavorite = (item) => handleItemAction(item, 'favorite');
     const onClickCart = (item) => handleItemAction(item, 'cart');
     
@@ -108,6 +123,10 @@
         closeDrawer
     });
 
+    provide('quantityActions', {
+        changeQuantity
+    });
+
 </script>
 
 <template>
@@ -115,7 +134,8 @@
         <Drawer 
             v-if="drawerOpen"
             :total-price="totalPrice"
-            :vat-price="vatPrice"
+            :total-tax="totalTax"
+            @create-order="createOrder"
         />
         <div class="bg-white w-4/5 m-auto  rounded-xl shadow-xl mt-14">
             <HeaderComponent 
