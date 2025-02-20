@@ -9,6 +9,7 @@
 
     const items = ref([]);
     const drawerOpen = ref(false);
+    const isCreativeOrder = ref(false);
 
     const favoriteItems = ref(JSON.parse(localStorage.getItem('favoriteItems')) || []);
     const cartItems = ref(JSON.parse(localStorage.getItem('cartItems')) || []);
@@ -16,6 +17,12 @@
     const totalPrice = computed(() => parseFloat(cartItems.value.reduce((acc, item) => acc + item.price*item.quantity, 0).toFixed(2)));
     const totalTax = computed(() => parseFloat((totalPrice.value * 0.05).toFixed(2)));
     const itemTax = (item) => parseFloat((item.price * 0.05).toFixed(2));
+
+    const cartIsEmpty = computed(() => cartItems.value.length === 0);
+
+    const cartButtonDisabled = computed(() => {
+        return isCreativeOrder.value || cartIsEmpty.value;
+    })
 
     const fetchProducts = async (filters = {}) => {
         try {
@@ -56,6 +63,7 @@
 
     const createOrder = async () => {
         try {
+            isCreativeOrder.value = true;
             const cartItemsCopy = JSON.parse(JSON.stringify(cartItems.value)).map(item => ({
                 ...item,
                 tax: item.tax ? Number(itemTax(item)) : 0, 
@@ -70,7 +78,7 @@
                     'Content-Type': 'application/json'
                 },
                 data: {
-                    items: cartItemsCopy,
+                    items: cartItemsCopy.value,
                     totalPrice: totalPrice.value,
                     paymentStatus: 'AWAITING_PAYMENT'
                 }
@@ -82,6 +90,8 @@
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
             return [];
+        } finally {
+            isCreativeOrder.value = false;
         }
     };
 
@@ -136,6 +146,7 @@
             :total-price="totalPrice"
             :total-tax="totalTax"
             @create-order="createOrder"
+            :button-disabled="cartButtonDisabled"
         />
         <div class="bg-white w-4/5 m-auto  rounded-xl shadow-xl mt-14">
             <HeaderComponent 
