@@ -1,6 +1,7 @@
 <script setup>
     import CardItemList from './CartItemList.vue';
     import DrawerHeader from './DrawerHeader.vue';
+    import InfoBlock from './InfoBlock.vue';
 
     const props = defineProps({
         totalPrice:Number,
@@ -10,8 +11,6 @@
 
     const emit = defineEmits(['createOrder']);
 
-
-
 </script>
 
 <template>
@@ -20,9 +19,16 @@
             <div class="flex flex-col justify-between h-full">
                 <div>
                     <DrawerHeader />
-                    <CardItemList />
+                    <div v-if="totalPrice === 0" class="my-[100%]">
+                        <InfoBlock 
+                            title="Your cart is empty"
+                            description="Add products to your cart to see the total price"
+                            imageUrl="/package-icon.png"
+                        />
+                    </div>
+                    <CardItemList v-if="totalPrice"/>
                 </div>
-                <div class="flex flex-col gap-5 mt-7">
+                <div v-if="totalPrice" class="flex flex-col gap-5 mt-7">
                     <div class="flex gap-2 ">
                         <span>Total:</span>
                         <div class="flex-1 border-b border-dashed"></div>

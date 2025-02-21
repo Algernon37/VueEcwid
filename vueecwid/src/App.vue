@@ -1,11 +1,9 @@
 <script setup>
     import { onMounted, ref, provide, computed } from "vue";
     import axios from "axios";
-
     import HeaderComponent from "../src/components/HeaderComponent.vue";
-    import CardList from "./components/CardList.vue";
     import Drawer from "./components/Drawer.vue";
-    import SearchSelect from "./components/SearchSelect.vue";
+
 
     const items = ref([]);
     const drawerOpen = ref(false);
@@ -95,10 +93,6 @@
         }
     };
 
-    const updateItems = (newItems) => {
-        items.value = newItems;
-    };
-
     const handleItemAction = (item, listType) => {
         let itemsList;
         if (listType === 'favorite') {
@@ -154,13 +148,7 @@
                 @open-drawer="openDrawer"
             />  
             <div class="p-10">
-                <SearchSelect 
-                    @update-items="updateItems"
-                    :fetch-products="fetchProducts"
-                />
-                <div class="mt-10">
-                    <CardList :items="items"/>
-                </div>
+               
             </div>
         </div>
     </div>
