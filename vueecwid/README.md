@@ -1,39 +1,48 @@
 # vueecwid
 
-This template should help get you started developing with Vue 3 in Vite.
+Проект создан с использованием Vue 3 in Vite. Это интернет магазин, который работает с Ecwid API. 
 
-## Recommended IDE Setup
+- **Vue 3**: Фреймворк для создания пользовательских интерфейсов.
+- **Vite**: Быстрый сборщик для разработки и продакшн-сборки.
+- **JavaScript/TypeScript**: Основной язык программирования проекта.
+- **Vue Router**: Управление маршрутизацией в приложении.
+- **Tailwind CSS**: Для стилизации компонентов.
+- **AutoAnimate**: Для плавной анимации.
+- **Ecwid API**: Для получения товаров и создания заказов.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Установка и запуск проекта
 
-## Type Support for `.vue` Imports in TS
+### Требования
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- Node.js >= 14.x
+- npm или Yarn
 
-## Customize configuration
+### Установка зависимостей
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+Перед началом работы необходимо установить зависимости проекта. Выполни команду:
 
-## Project Setup
-
-```sh
+```bash
 npm install
+# или
+yarn install
 ```
 
-### Compile and Hot-Reload for Development
+Чтобы запустить проект в режиме разработки с горячей перезагрузкой:
 
-```sh
+```bash
 npm run dev
 ```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
+# или
+```bash
+yarn dev
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Для сборки проекта для продакшн:
 
-```sh
-npm run lint
+```bash
+npm run build
+```
+# или
+```bash
+yarn build
 ```
