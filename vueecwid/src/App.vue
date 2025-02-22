@@ -1,55 +1,19 @@
 <script setup>
-    import { onMounted, ref, provide, computed } from "vue";
-    import axios from "axios";
+    import { ref, provide, computed } from "vue";
     import HeaderComponent from "../src/components/HeaderComponent.vue";
     import Drawer from "./components/Drawer.vue";
 
-
-    const items = ref([]);
-    const drawerOpen = ref(false);
-    const isCreativeOrder = ref(false);
-
+    /* Избранное  (START) */ 
     const favoriteItems = ref(JSON.parse(localStorage.getItem('favoriteItems')) || []);
-    const cartItems = ref(JSON.parse(localStorage.getItem('cartItems')) || []);
+    const onClickFavorite = (item) => handleItemAction(item, 'favorite');
+    /* Избранное  (END) */ 
     
+    /* Корзина (START) */ 
+    const drawerOpen = ref(false);
+    
+    const cartItems = ref(JSON.parse(localStorage.getItem('cartItems')) || []);
+    const onClickCart = (item) => handleItemAction(item, 'cart');
     const totalPrice = computed(() => parseFloat(cartItems.value.reduce((acc, item) => acc + item.price*item.quantity, 0).toFixed(2)));
-    const totalTax = computed(() => parseFloat((totalPrice.value * 0.05).toFixed(2)));
-    const itemTax = (item) => parseFloat((item.price * 0.05).toFixed(2));
-
-    const cartIsEmpty = computed(() => cartItems.value.length === 0);
-
-    const cartButtonDisabled = computed(() => {
-        return isCreativeOrder.value || cartIsEmpty.value;
-    })
-
-    const fetchProducts = async (filters = {}) => {
-        try {
-            const options = {
-                method: 'GET',
-                url: 'https://app.ecwid.com/api/v3/108362264/products',
-                headers: {
-                    'Authorization': 'Bearer public_RiNvjTVVzKLhFNWyzR5fNY68u1GMHLEs',
-                    accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                params: {
-                    sortBy: filters.sortBy,          
-                    keyword: filters.searchQuery,   
-                    enabled: true,  
-                    limit: 100  
-                }
-            };
-            const response = await axios(options);
-            return response.data.items;
-        } catch (error) {
-            console.error('Error:', error.response?.data || error.message);
-            return [];
-        }
-    };
-
-    onMounted(async () => {
-        items.value = await fetchProducts();  
-    });
 
     const closeDrawer = () => {
         drawerOpen.value = false;
@@ -57,40 +21,6 @@
 
     const openDrawer = () => {
         drawerOpen.value = true;
-    };
-
-    const createOrder = async () => {
-        try {
-            isCreativeOrder.value = true;
-            const cartItemsCopy = JSON.parse(JSON.stringify(cartItems.value)).map(item => ({
-                ...item,
-                tax: item.tax ? Number(itemTax(item)) : 0, 
-                shipping: item.shipping ? Number(item.shipping) : 0 
-            }));
-            const options = {
-                method: 'POST',
-                url: 'https://app.ecwid.com/api/v3/108362264/orders',
-                headers: {
-                    'Authorization': 'Bearer public_RiNvjTVVzKLhFNWyzR5fNY68u1GMHLEs',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    items: cartItemsCopy.value,
-                    totalPrice: totalPrice.value,
-                    paymentStatus: 'AWAITING_PAYMENT'
-                }
-            };
-            const response = await axios(options);
-            cartItems.value = [];
-            localStorage.setItem('cartItems', JSON.stringify([]));
-            return response.data;
-        } catch (error) {
-            console.error('Error:', error.response?.data || error.message);
-            return [];
-        } finally {
-            isCreativeOrder.value = false;
-        }
     };
 
     const handleItemAction = (item, listType) => {
@@ -115,10 +45,8 @@
     const changeQuantity = (item, newQuantity) => {
         item.quantity = newQuantity;
     };
+    /* Корзина (END) */ 
 
-    const onClickFavorite = (item) => handleItemAction(item, 'favorite');
-    const onClickCart = (item) => handleItemAction(item, 'cart');
-    
     provide('favoriteAndCart', {
         onClickFavorite,
         onClickCart,
@@ -138,9 +66,6 @@
         <Drawer 
             v-if="drawerOpen"
             :total-price="totalPrice"
-            :total-tax="totalTax"
-            @create-order="createOrder"
-            :button-disabled="cartButtonDisabled"
         />
         <div class="bg-white w-4/5 m-auto  rounded-xl shadow-xl mt-14">
             <HeaderComponent 
@@ -148,7 +73,8 @@
                 @open-drawer="openDrawer"
             />  
             <div class="p-10">
-               
+                <router-view>
+                </router-view>
             </div>
         </div>
     </div>

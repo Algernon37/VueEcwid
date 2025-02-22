@@ -1,5 +1,6 @@
 <script setup>
     import { reactive, watch } from "vue";
+    import debounce from "lodash/debounce";
 
     const props = defineProps({
         fetchProducts: Function
@@ -21,14 +22,10 @@
         filters.sortBy = event.target.value; 
     };
 
-    const onChangeSearchInput = event => {
-        let debounceTimeout;
-        clearTimeout(debounceTimeout); 
-        if (event.target.value.length < 4) return; 
-        debounceTimeout = setTimeout(() => {
-            filters.searchQuery = event.target.value;
-        }, 1000);
-    };
+    const onChangeSearchInput = debounce(event => {
+        filters.searchQuery = event.target.value;
+        if (inputValue.length < 4) return;
+    }, 500);
 
 </script>
 
